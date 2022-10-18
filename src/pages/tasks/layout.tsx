@@ -1,47 +1,56 @@
+// EXTERNAL
 import { useState } from "react";
-import { Task } from "../../models/task";
-import { DataGrid, GridColDef, GridEventListener, GridRowParams } from '@mui/x-data-grid';
-import { Button, Pagination, TextField } from "@mui/material";
+import { DataGrid, GridColDef, GridRowParams } from '@mui/x-data-grid';
+import { Pagination } from "@mui/material";
+
+// INTERNAL
+import ModalComponent from "../../components/Modal";
+import FilterBarComponent from "../../components/FilterBar";
+import { SearchTaskInput, Task } from "../../models/task";
 import { UpdateTaskPayload } from "../../models/task";
-import Modal from "../../components/Modal"
 
 interface TaskLayoutProps {
     taskData: Task[],
     totalCount: number,
-    searchTasks: (search: string, page: number, pageSize: number) => void;
-    columns: GridColDef[]
-    updateTask: (event: UpdateTaskPayload) => void
+    columns: GridColDef[],
+    searchTasks: (payload: SearchTaskInput) => void,
+    updateTask: (payload: UpdateTaskPayload) => void,
+    addTask: (payload: UpdateTaskPayload) => void
 }
 
 const TaskLayout: React.FC<TaskLayoutProps> = ({
     taskData,
     totalCount,
-    searchTasks,
     columns,
-    updateTask
+    searchTasks,
+    updateTask,
+    addTask
 }) => {
-    // TABLE
-    const [searchInput, setSearchInput] = useState<string>('');
+    // TABLE STATES
+    const [search, setSearchInput] = useState<string>('');
     const [page, setPage] = useState<number>(1);
     const [pageSize, setPageSize] = useState<number>(10);
 
-    // MODAL
+    // MODAL STATES
     const [open, setOpen] = useState<boolean>(false);
     const [taskId, setTaskId] = useState<string>("");
     const [name, setName] = useState<string>("");
     const [description, setDescription] = useState<string>("");
     const [dueDate, setDueDate] = useState<Date>(new Date());
+    const [type, setType] = useState<string>("");
 
+    // FUNCTION TO SHOW MODAL
     const showModal = (event: GridRowParams) => {
-        console.log("event.row", event.row);
         setName(event.row.name)
         setDescription(event.row.description)
         setDueDate(event.row.dueDate)
         setTaskId(event.row.taskId)
+        setType("UPDATE")
         setOpen(true)
     }
+
+    // FUNCTION TO CALCULATE PAGE COUNT
     const pageCount = () => {
-        // CALCULATE PAGES
         return (pageSize &&
             pageSize !== 0
             ? Math.ceil(
@@ -49,48 +58,34 @@ const TaskLayout: React.FC<TaskLayoutProps> = ({
             )
             : totalCount);
     }
+
+    // FUNCTION TO TRIGGER SEARCH
+    const triggerSearch = (params: SearchTaskInput) => {
+        setPage(1)
+        params.page = 1
+        searchTasks(params)
+    }
     return (
         <div className="flex flex-col w-full">
+
+            {/* TITLE */}
             <p className="text-4xl font-semibold mb-4">TODO or NOT TODO</p>
+
             {/* FILTER BAR */}
-            <div className="flex flex-row justify-between">
-                <div className="flex flex-row gap-x-5">
-                    <TextField label="Items per page" variant="standard"
-                        value={pageSize}
-                        onChange={(event) => setPageSize(parseInt(event.target.value) || 0)} />
-                    <TextField label="Search" variant="standard" onChange={(event) => {
-                        setSearchInput(event.target.value)
-                        if (event.target.value.length < 1) {
-                            searchTasks("", page, pageSize)
-                        }
-                    }
-                    }
-                        onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                            if (e.key === 'Enter') {
-                                searchTasks(searchInput, page, pageSize);
-                            }
-                        }}
-                    />
+            <FilterBarComponent
+                pageSize={pageSize}
+                page={page}
+                search={search}
+                setPageSize={setPageSize}
+                setSearchInput={setSearchInput}
+                searchTasks={triggerSearch}
+                setType={setType}
+                setOpen={setOpen}
+            />
 
-                </div>
-                <div className="flex flex-row gap-x-5 h-8 mt-2">
-                    <Button
-                        onClick={() => searchTasks(searchInput, page, pageSize)}
-                        variant="contained"
-                    >
-                        SEARCH
-                    </Button>
-                    <Button
-                        onClick={(event) => setOpen(true)}
-                        variant="contained"
-                    >
-                        ADD
-                    </Button>
-                </div>
-            </div>
+            {/* DATA TABLE  */}
             <div style={{ height: 400, width: '100%' }}>
-                {/* DATA TABLE */}
-
+                {/* DATA GRID  */}
                 <DataGrid
                     rows={taskData}
                     columns={columns}
@@ -103,22 +98,23 @@ const TaskLayout: React.FC<TaskLayoutProps> = ({
                 />
 
                 {/* PAGINATION */}
-                <div className="flex justify-items-center">
+                <div className="flex w-fit mx-auto mt-3">
                     <Pagination
                         className="flex"
                         count={pageCount()}
                         shape="rounded"
+                        page={page}
                         onChange={(event: React.ChangeEvent<unknown>, value: number) => {
                             setPage(value);
-                            searchTasks(searchInput, value, pageSize)
+                            searchTasks({ search, page: value, pageSize })
                         }}
                     />
                 </div>
-
             </div>
 
             {/* MODAL */}
-            <Modal
+            <ModalComponent
+                type={type}
                 open={open}
                 name={name}
                 description={description}
@@ -126,8 +122,19 @@ const TaskLayout: React.FC<TaskLayoutProps> = ({
                 setName={(val) => setName(val)}
                 setDescription={(val) => setDescription(val)}
                 setDueDate={(val) => setDueDate(val)}
-                updateTask={() => {
-                    updateTask({ taskId, name, description, dueDate })
+                update={() => {
+                    if (type === "UPDATE") {
+                        updateTask({ taskId, name, description, dueDate })
+                        setOpen(false)
+                    } else if (type === "ADD") {
+                        addTask({ name, description, dueDate })
+                        setOpen(false)
+                    }
+                }}
+                cancel={() => {
+                    setName("")
+                    setDescription("")
+                    setDueDate(new Date())
                     setOpen(false)
                 }}
             />

@@ -2,7 +2,8 @@ import React from "react";
 import {
     BrowserRouter,
     Routes,
-    Route
+    Route,
+    Navigate
 } from "react-router-dom";
 
 // PAGES
@@ -12,9 +13,11 @@ const AppRouter: React.FC<{}> = () => {
         <BrowserRouter>
             <Routes>
                 <Route path="/" element={<TaskList />} />
+                {/* GUARD TO PREVENT ACCESS TO UNHANDLED ROUTES */}
+                <Route path="*" element={<Navigate to="/" />} />
             </Routes>
         </BrowserRouter>
-    );
+    )
 }
 
 export default AppRouter;

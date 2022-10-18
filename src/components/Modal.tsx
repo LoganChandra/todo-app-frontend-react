@@ -1,24 +1,25 @@
+// EXTERNAL
 import React from 'react';
 import { Box, Button, Modal, TextField } from '@mui/material';
-
-// DATE
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { UpdateTaskPayload } from '../../models/task';
 
 interface ModalComponentProps {
-    open: boolean
+    type: string;
+    open: boolean;
     name: string;
     description: string;
     dueDate: Date;
-    setName: (value: string) => void;
-    setDescription: (value: string) => void;
-    setDueDate: (value: Date) => void;
-    update: () => void
+    setName: (payload: string) => void;
+    setDescription: (payload: string) => void;
+    setDueDate: (payload: Date) => void;
+    update: () => void;
+    cancel: () => void;
 }
 
 const ModalComponent: React.FC<ModalComponentProps> = ({
+    type,
     open,
     name,
     description,
@@ -26,7 +27,8 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
     setName,
     setDescription,
     setDueDate,
-    update
+    update,
+    cancel
 }) => {
 
     const style = {
@@ -40,43 +42,54 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
         boxShadow: 24,
         p: 4,
     };
-    let localOpen = open
     return (
+        // MODAL
         <Modal
             open={open}
             onClose={() => { open = false }}
             aria-labelledby="modal-modal-title"
             aria-describedby="modal-modal-description"
         >
+            {/* OUTER BOX */}
             <Box sx={style}>
+
+                {/* MODAL FORM */}
                 <div className="flex flex-col w-full gap-y-5">
-                    <h1>
-                        UPDATE TASK
-                    </h1>
-                    <TextField label="NAME" variant="standard" value={name} onChange={(e: any) => setName(e.target.value)} />
-                    <TextField label="DESCRIPTION" variant="standard" value={description} onChange={(e: any) => setDescription(e.target.value)} />
+                    {/* TITLE */}
+                    <h1>{type} TASK</h1>
+
+                    {/* NAME */}
+                    <TextField label="NAME" variant="standard" value={name} onChange={(e) => setName(e.target.value)} />
+
+                    {/* DESCRPITION */}
+                    <TextField label="DESCRIPTION" variant="standard" value={description} onChange={(e) => setDescription(e.target.value)} />
+
+                    {/* DATEPICKER */}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <DatePicker
                             label="DUE DATE"
                             value={dueDate}
-                            onChange={(e: any) => setDueDate(e.target.value)}
+                            onChange={(val) => setDueDate(val || new Date())}
                             renderInput={(params) => <TextField {...params} />}
                         />
                     </LocalizationProvider>
+
+                    {/* ACTION BUTTONS */}
                     <div className="flex flex-row justify-between">
+                        {/* CANCEL */}
                         <Button
-                            onClick={() => { open = false }}
+                            onClick={() => cancel()}
                             variant="outlined"
                         >
                             CANCEL
                         </Button>
+
+                        {/* TYPE */}
                         <Button
-                            onClick={() => {
-                                update()
-                            }}
+                            onClick={() => update()}
                             variant="contained"
                         >
-                            UPDATE
+                            {type}
                         </Button>
                     </div>
                 </div>
