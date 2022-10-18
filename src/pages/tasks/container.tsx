@@ -25,23 +25,36 @@ const TaskList: React.FC<{}> = () => {
 
     // DEFINING COLUMNS FOR DATA TABLE
     const columns: GridColDef[] = ([
-        { field: "name", headerName: "Name", sortable: true, width: 300 },
-        { field: "description", headerName: "Description", width: 300 },
+        {
+            field: "name",
+            headerName: "Name",
+            sortable: true,
+            flex: 1
+        },
+        {
+            field: "description",
+            headerName: "Description",
+            flex: 1
+        },
         {
             field: "dueDate",
             headerName: "Due date",
             sortable: true,
-            width: 300,
+            flex: 1,
             valueGetter: (param) => new Date(param.row.dueDate).toDateString()
         },
         {
             field: "createDate",
             headerName: "Create date",
             sortable: true,
-            width: 300,
+            flex: 1,
             valueGetter: (param) => new Date(param.row.createDate).toDateString(),
         },
-        { field: "status", headerName: "Status", width: 100 }
+        {
+            field: "status",
+            headerName: "Status",
+            width: 100
+        }
     ]);
 
     // FUNCTION TO SEARCH TASKS

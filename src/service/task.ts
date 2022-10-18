@@ -9,7 +9,7 @@ export class TaskService {
 
     // DEFNING API URL
     constructor() {
-        this.API_URL = "https://todo-or-not-todo-app-backend.herokuapp.com" || ""
+        this.API_URL = process.env.REACT_APP_API_KEY || ""
     }
 
     // LIST TASK 
