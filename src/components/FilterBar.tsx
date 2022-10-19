@@ -27,6 +27,26 @@ const FilterBarComponent: React.FC<FilterBarComponentProps> = ({
     setOpen
 }) => {
 
+    // FUNCTION TO HANDLE CHANGE PAGE SIZE
+    const onChangePageSize = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        let pageSize = parseInt(event.target.value)
+        setPageSize((pageSize > 99 ? 99 : pageSize) || 1)
+        searchTasks({ search, page, pageSize: parseInt(event.target.value) || 0 });
+    }
+
+    // FUNCTION TO HANDLE CHANGE SEARCH
+    const onChangeSearch = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setSearchInput(event.target.value)
+        if (event.target.value.length < 1) {
+            searchTasks({ search: "", page, pageSize })
+        }
+    }
+    // FUNCTION TO HANDLE KEY DOWN
+    const onKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            searchTasks({ search, page, pageSize });
+        }
+    }
     return (
         <div className="flex flex-row justify-between">
 
@@ -36,24 +56,12 @@ const FilterBarComponent: React.FC<FilterBarComponentProps> = ({
                 {/* PAGE SIZE */}
                 <TextField label="Items per page" variant="standard"
                     value={pageSize}
-                    onChange={(event) => {
-                        setPageSize(parseInt(event.target.value) || 0)
-                        searchTasks({ search, page, pageSize: parseInt(event.target.value) || 0 });
-                    }} />
+                    onChange={onChangePageSize} />
 
                 {/* SEARCH */}
-                <TextField label="Search" variant="standard" onChange={(event) => {
-                    setSearchInput(event.target.value)
-                    if (event.target.value.length < 1) {
-                        searchTasks({ search: "", page, pageSize })
-                    }
-                }
-                }
-                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>) => {
-                        if (e.key === 'Enter') {
-                            searchTasks({ search, page, pageSize });
-                        }
-                    }}
+                <TextField label="Search" variant="standard"
+                    onChange={onChangeSearch}
+                    onKeyDown={onKeyDown}
                 />
             </div>
 
@@ -69,10 +77,7 @@ const FilterBarComponent: React.FC<FilterBarComponentProps> = ({
 
                 {/* ADD */}
                 <Button
-                    onClick={() => {
-                        setType("ADD")
-                        setOpen(true)
-                    }}
+                    onClick={() => { setType("ADD"); setOpen(true) }}
                     variant="contained"
                 >
                     ADD

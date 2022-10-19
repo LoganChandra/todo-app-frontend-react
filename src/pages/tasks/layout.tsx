@@ -65,6 +65,32 @@ const TaskLayout: React.FC<TaskLayoutProps> = ({
         params.page = 1
         searchTasks(params)
     }
+
+    // FUNCTION TO HANDLE CHANGE
+    const onChange = (event: React.ChangeEvent<unknown>, value: number) => {
+        setPage(value);
+        searchTasks({ search, page: value, pageSize })
+    }
+
+    // FUNCTION TO HANDLE CANCEL
+    const onUpdate = () => {
+        if (type === "UPDATE") {
+            updateTask({ taskId, name, description, dueDate })
+            setOpen(false)
+        } else if (type === "ADD") {
+            addTask({ name, description, dueDate })
+            setOpen(false)
+        }
+    }
+
+    // FUNCTION TO HANDLE CANCEL
+    const onCancel = () => {
+        setName("")
+        setDescription("")
+        setDueDate(new Date())
+        setOpen(false)
+    }
+
     return (
         <div className="flex flex-col w-full">
 
@@ -97,7 +123,7 @@ const TaskLayout: React.FC<TaskLayoutProps> = ({
                     hideFooter={true}
                 />
                 <p className="text-sm">
-                *Click on a row to update a task
+                    *Click on a row to update a task
                 </p>
 
                 {/* PAGINATION */}
@@ -107,10 +133,7 @@ const TaskLayout: React.FC<TaskLayoutProps> = ({
                         count={pageCount()}
                         shape="rounded"
                         page={page}
-                        onChange={(event: React.ChangeEvent<unknown>, value: number) => {
-                            setPage(value);
-                            searchTasks({ search, page: value, pageSize })
-                        }}
+                        onChange={onChange}
                     />
                 </div>
             </div>
@@ -125,21 +148,8 @@ const TaskLayout: React.FC<TaskLayoutProps> = ({
                 setName={(val) => setName(val)}
                 setDescription={(val) => setDescription(val)}
                 setDueDate={(val) => setDueDate(val)}
-                update={() => {
-                    if (type === "UPDATE") {
-                        updateTask({ taskId, name, description, dueDate })
-                        setOpen(false)
-                    } else if (type === "ADD") {
-                        addTask({ name, description, dueDate })
-                        setOpen(false)
-                    }
-                }}
-                cancel={() => {
-                    setName("")
-                    setDescription("")
-                    setDueDate(new Date())
-                    setOpen(false)
-                }}
+                update={onUpdate}
+                cancel={onCancel}
             />
         </div>
     )
