@@ -30,8 +30,7 @@ const FilterBarComponent: React.FC<FilterBarComponentProps> = ({
     // FUNCTION TO HANDLE CHANGE PAGE SIZE
     const onChangePageSize = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         let pageSize = parseInt(event.target.value)
-        setPageSize((pageSize > 99 ? 99 : pageSize) || 1)
-        searchTasks({ search, page, pageSize: parseInt(event.target.value) || 0 });
+        setPageSize((pageSize > 99 ? 99 : pageSize) || 0)
     }
 
     // FUNCTION TO HANDLE CHANGE SEARCH

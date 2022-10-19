@@ -19,6 +19,7 @@ const TaskList: React.FC<{}> = () => {
     // LOAD TASKS ON LOAD
     useEffect(() => {
         search({ search: "", page: 1, pageSize: 10 });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     // DEFINING COLUMNS FOR DATA TABLE
@@ -27,12 +28,14 @@ const TaskList: React.FC<{}> = () => {
             field: "name",
             headerName: "Name",
             sortable: true,
-            flex: 1
+            flex: 1,
+            valueGetter: (param) => param.row.name || "-"
         },
         {
             field: "description",
             headerName: "Description",
-            flex: 1
+            flex: 1,
+            valueGetter: (param) => param.row.description || "-"
         },
         {
             field: "dueDate",

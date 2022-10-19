@@ -8,6 +8,7 @@ import ModalComponent from "../../components/Modal";
 import FilterBarComponent from "../../components/FilterBar";
 import { SearchTaskInput, Task } from "../../models/task";
 import { UpdateTaskPayload } from "../../models/task";
+import { useEffect } from "react";
 
 interface TaskLayoutProps {
     taskData: Task[],
@@ -66,11 +67,9 @@ const TaskLayout: React.FC<TaskLayoutProps> = ({
         searchTasks(params)
     }
 
-    // FUNCTION TO HANDLE CHANGE
-    const onChange = (event: React.ChangeEvent<unknown>, value: number) => {
-        setPage(value);
-        searchTasks({ search, page: value, pageSize })
-    }
+    useEffect(() => {
+        searchTasks({ search, page, pageSize })
+    }, [page, pageSize])
 
     // FUNCTION TO HANDLE CANCEL
     const onUpdate = () => {
@@ -91,6 +90,13 @@ const TaskLayout: React.FC<TaskLayoutProps> = ({
         setOpen(false)
     }
 
+    const onSetOpen = (val: any) => {
+        setName("")
+        setDescription("")
+        setDueDate(new Date())
+        setOpen(val)
+    }
+
     return (
         <div className="flex flex-col w-full">
 
@@ -106,7 +112,7 @@ const TaskLayout: React.FC<TaskLayoutProps> = ({
                 setSearchInput={setSearchInput}
                 searchTasks={triggerSearch}
                 setType={setType}
-                setOpen={setOpen}
+                setOpen={onSetOpen}
             />
 
             {/* DATA TABLE  */}
@@ -133,7 +139,9 @@ const TaskLayout: React.FC<TaskLayoutProps> = ({
                         count={pageCount()}
                         shape="rounded"
                         page={page}
-                        onChange={onChange}
+                        onChange={(event: React.ChangeEvent<unknown>, value: number) => {
+                            setPage(value)
+                        }}
                     />
                 </div>
             </div>
