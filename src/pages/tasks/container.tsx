@@ -1,5 +1,5 @@
 // EXTERNAL
-import React, { useEffect, useState, useMemo } from 'react';
+import React, { useEffect, useState } from 'react';
 import { GridColDef } from '@mui/x-data-grid';
 
 // INTERNAL
@@ -14,14 +14,12 @@ const TaskList: React.FC<{}> = () => {
     const [totalCount, setTotalCount] = useState<number>(0)
 
     // DEFINING TASK SERVICE FOR API CALLS
-    const taskService = useMemo(() => {
-        return new TaskService();
-    }, []);
+    const taskService = new TaskService();
 
     // LOAD TASKS ON LOAD
     useEffect(() => {
         search({ search: "", page: 1, pageSize: 10 });
-    }, [taskService]);
+    }, []);
 
     // DEFINING COLUMNS FOR DATA TABLE
     const columns: GridColDef[] = ([
