@@ -96,9 +96,12 @@ const TaskLayout: React.FC<TaskLayoutProps> = ({
                     hideFooterPagination={true}
                     hideFooter={true}
                 />
+                <p className="text-sm">
+                *Click on a row to update a task
+                </p>
 
                 {/* PAGINATION */}
-                <div className="flex w-fit mx-auto mt-3">
+                <div className="flex w-fit mx-auto">
                     <Pagination
                         className="flex"
                         count={pageCount()}

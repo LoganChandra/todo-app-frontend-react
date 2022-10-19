@@ -55,7 +55,6 @@ const FilterBarComponent: React.FC<FilterBarComponentProps> = ({
                         }
                     }}
                 />
-
             </div>
 
             {/* BUTTONS */}

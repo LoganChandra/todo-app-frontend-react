@@ -14,31 +14,33 @@ export class TaskService {
 
     // LIST TASK 
     async listTask(queryStringParameters: SearchTaskInput): Promise<{ tasks: Task[], totalCount: number }> {
-        let result = await axios
-            .get(`${this.API_URL}/task`, { params: queryStringParameters })
-        if (result && result.status !== 200) {
-            return result.data.data || {};
+        try {
+            let result = await axios
+                .get(`${this.API_URL}/task`, { params: queryStringParameters })
+            return result.data.data || [];
+
+        } catch (error) {
+            throw new Error(`List task failed => ${JSON.stringify(error)}`)
         }
-        return result.data.data || [];
     }
 
     // ADD TASK
-    async addTask(body: UpdateTaskPayload): Promise<null> {
-        let result = await axios
-            .post(`${this.API_URL}/task`, body)
-        if (result && result.status !== 200) {
-            return result.data.data || {};
+    async addTask(body: UpdateTaskPayload) {
+        try {
+            let result = await axios
+                .post(`${this.API_URL}/task`, body)
+        } catch (error) {
+            throw new Error(`Add task failed => ${JSON.stringify(error)}`)
         }
-        return result.data || [];
     }
 
     // UPDATE TASK
-    async updateTask(taskId: string | undefined, body: UpdateTaskPayload): Promise<null> {
-        let result = await axios
-            .patch(`${this.API_URL}/task/${taskId}`, body)
-        if (result && result.status !== 200) {
-            return result.data.data || {};
+    async updateTask(taskId: string | undefined, body: UpdateTaskPayload) {
+        try {
+            let result = await axios
+                .patch(`${this.API_URL}/task/${taskId}`, body)
+        } catch (error) {
+            throw new Error(`Update task failed => ${JSON.stringify(error)}`)
         }
-        return result.data;
     }
 }
