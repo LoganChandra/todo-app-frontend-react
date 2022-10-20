@@ -6,4 +6,7 @@ This is a simple todo app which allows the user to list, add and edit tasks.
 - npm i 
 - npm run serve
 
+## Testing
+- npm test
+
 Your app will run in localhost!
