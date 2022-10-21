@@ -123,7 +123,7 @@ const TaskLayout: React.FC<TaskLayoutProps> = ({
                     columns={columns}
                     pageSize={pageSize}
                     rowsPerPageOptions={[page]}
-                    onRowClick={(event) => showModal(event)}
+                    onRowClick={showModal}
                     disableSelectionOnClick
                     hideFooterPagination={true}
                     hideFooter={true}
@@ -153,9 +153,9 @@ const TaskLayout: React.FC<TaskLayoutProps> = ({
                 name={name}
                 description={description}
                 dueDate={dueDate}
-                setName={(val) => setName(val)}
-                setDescription={(val) => setDescription(val)}
-                setDueDate={(val) => setDueDate(val)}
+                setName={setName}
+                setDescription={setDescription}
+                setDueDate={setDueDate}
                 update={onUpdate}
                 cancel={onCancel}
             />

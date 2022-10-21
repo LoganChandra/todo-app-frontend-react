@@ -1,5 +1,5 @@
 // EXTERNAL
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { GridColDef } from '@mui/x-data-grid';
 
 // INTERNAL
@@ -7,7 +7,11 @@ import { SearchTaskInput, Task, UpdateTaskPayload } from '../../models/task';
 import { TaskService } from '../../service/task';
 import TaskLayout from './layout';
 
+
 const TaskList: React.FC<{}> = () => {
+
+    // REFS
+    const search = useRef((payload: SearchTaskInput) => { })
 
     // STATES
     const [taskData, setTaskData] = useState<Task[]>([])
@@ -18,8 +22,7 @@ const TaskList: React.FC<{}> = () => {
 
     // LOAD TASKS ON LOAD
     useEffect(() => {
-        search({ search: "", page: 1, pageSize: 10 });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        search.current({ search: "", page: 1, pageSize: 10 });
     }, []);
 
     // DEFINING COLUMNS FOR DATA TABLE
@@ -59,7 +62,7 @@ const TaskList: React.FC<{}> = () => {
     ]);
 
     // FUNCTION TO SEARCH TASKS
-    const search = async (payload: SearchTaskInput) => {
+    search.current = async (payload: SearchTaskInput) => {
         try {
             let res = await taskService.listTask(payload)
             setTaskData(res.tasks.map((e, idx) => { return { ...e, id: idx } }));
@@ -75,7 +78,7 @@ const TaskList: React.FC<{}> = () => {
         try {
             let { name, description, dueDate } = body
             await taskService.updateTask(body.taskId, { name, description, dueDate })
-            search({ search: "", page: 1, pageSize: 10 })
+            search.current({ search: "", page: 1, pageSize: 10 })
 
         } catch (error) {
             console.error(error);
@@ -87,7 +90,7 @@ const TaskList: React.FC<{}> = () => {
         try {
             let { name, description, dueDate } = body
             await taskService.addTask({ name, description, dueDate })
-            search({ search: "", page: 1, pageSize: 10 })
+            search.current({ search: "", page: 1, pageSize: 10 })
 
         } catch (error) {
             console.error(error);
@@ -99,7 +102,7 @@ const TaskList: React.FC<{}> = () => {
         <div className="mt-10 mx-10">
             <TaskLayout
                 addTask={addTask}
-                searchTasks={search}
+                searchTasks={search.current}
                 updateTask={updateTask}
                 taskData={taskData}
                 totalCount={totalCount}

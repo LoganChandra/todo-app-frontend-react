@@ -78,7 +78,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
                     <div className="flex flex-row justify-between">
                         {/* CANCEL */}
                         <Button
-                            onClick={() => cancel()}
+                            onClick={cancel}
                             variant="outlined"
                         >
                             CANCEL
@@ -86,7 +86,7 @@ const ModalComponent: React.FC<ModalComponentProps> = ({
 
                         {/* TYPE */}
                         <Button
-                            onClick={() => update()}
+                            onClick={update}
                             variant="contained"
                         >
                             {type}
