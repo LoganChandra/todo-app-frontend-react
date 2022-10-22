@@ -27,7 +27,7 @@ export class TaskService {
     // ADD TASK
     async addTask(body: UpdateTaskPayload) {
         try {
-            let result = await axios
+            await axios
                 .post(`${this.API_URL}/task`, body)
         } catch (error) {
             throw new Error(`Add task failed => ${JSON.stringify(error)}`)
@@ -37,7 +37,7 @@ export class TaskService {
     // UPDATE TASK
     async updateTask(taskId: string | undefined, body: UpdateTaskPayload) {
         try {
-            let result = await axios
+            await axios
                 .patch(`${this.API_URL}/task/${taskId}`, body)
         } catch (error) {
             throw new Error(`Update task failed => ${JSON.stringify(error)}`)
