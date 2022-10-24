@@ -67,6 +67,7 @@ const TaskLayout: React.FC<TaskLayoutProps> = ({
         searchTasks(params)
     }
 
+    // USE EFFECT FOR PAGE AND PAGESIZE
     useEffect(() => {
         searchTasks({ search, page, pageSize })
     }, [page, pageSize])
@@ -90,6 +91,7 @@ const TaskLayout: React.FC<TaskLayoutProps> = ({
         setOpen(false)
     }
 
+    // FUNCTION TO HANDLE SETOPEN
     const onSetOpen = (val: any) => {
         setName("")
         setDescription("")
